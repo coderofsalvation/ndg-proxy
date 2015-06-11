@@ -7,9 +7,11 @@ generate_config(){
   extrajson=""; :>/tmp/.config 
   for dir in "${CONFIGPATH[@]}"; do echo $dir/config >> /tmp/.config; done
   while read file; do source $file 
-    [[ -n $HOST ]] && extrajson="$extrajson\n\"$HOST\":{\n\t\"target\": \"http://$LISTEN:$PORT\",\n\t\"ws\": true\n\t},"
+    [[ -n $HOST ]] && extrajson="$extrajson\n\"$URL\":{\n\t\"target\": \"$PROTOCOL$HOST:$PORT\",\n\t\"ws\": true\n\t},\n\t\"$URL\":{\n\t\"target\": \"$PROTOCOL$HOST:$PORT\"\n\t},"
   done < /tmp/.config
-  { echo -e "{\n$extrajson"; tail -n+2 $SELF_PATH/config.json; } > $SELF_PATH/config.generated.json
+  if [[ -f $SELF_PATH/config.json ]]; then 
+    { echo -e "{\n$extrajson"; tail -n+2 $SELF_PATH/config.json; } > $SELF_PATH/config.generated.json
+  else end=$(( ${#extrajson}-1 )); echo -e "{ ${extrajson:0:end} } " > $SELF_PATH/config.generated.json; fi
 }
 
 startserver(){
