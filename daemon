@@ -1,0 +1,25 @@
+SELF_PATH="$(dirname "$(readlink -f $0)")"
+CONFIGPATH=()
+# put your app paths here 
+CONFIGPATH+=("/srv/apps")
+
+generate_config(){
+  extrajson=""; :>/tmp/.config 
+  for dir in "${CONFIGPATH[@]}"; do echo $dir/config >> /tmp/.config; done
+  while read file; do source $file 
+    [[ -n $HOST ]] && extrajson="$extrajson\n\"$HOST\":{\n\t"target": "http://$LISTEN:$PORT",\n\t"ws": true\n\t},"
+  done < /tmp/.config
+  { echo -e "{\n$extrajson"; tail -n+2 $SELF_PATH/config.json; } > $SELF_PATH/config.generated.json
+}
+
+startserver(){
+  port=$1; 
+  pid="$(netstat -nap | grep node | grep ":$port" | head -n1 | sed "s/.*LISTEN//g;s/\/.*//g;s/ //g")"; 
+  [[ ${#pid} > 0 ]] && kill -9 $pid 
+  cd $SELF_PATH 
+  PORT=$port nohup ./proxy-server --table=config.generated.json &
+  disown
+}
+
+generate_config 
+startserver 80

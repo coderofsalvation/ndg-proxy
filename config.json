@@ -1,0 +1,10 @@
+{
+  "http://mysub.domain.com": {
+    "target": "http://localhost:8404",
+    "description": "point to this when you're doing maintenance"
+  },
+  "http://projectfoo.com": {
+    "target": "http://localhost:8080"
+    "ws": true
+  }
+}
