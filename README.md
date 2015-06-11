@@ -49,20 +49,20 @@ websocket
       }
     }
 
-## Config from app directories 
+## Config from (ndg) app directories 
 
-This proxy can automatically parse config from app-dirs.
-Suppose you have all your apps living in a `/srv/app/` dir: 
+> ndg + ndg-proxy = multiple nodejscontainers in 1 nodejs container
+
+ndg-proxy reads container-configurations from ndg
+
+* more on ndg: https://github.com/coderofsalvation/nodejs-deploy-githook.bash
+    
+Suppose you have all your ndg apps living in a `/srv/app/` dir: 
 
     /srv/app/foo
     /srv/app/bar
 
-Then put a 'config' file somewhere in a subdir like so: `/srv/app/foo/config` :
+The proxy will parse each`.ndg/config` file (which contains host/port configuration variables).
 
-    HOST=http://foo.bar.com
-    LISTEN=127.0.0.1
-    PORT=8888
+Then make sure to add/uncomment `CONFIGPATH+=("/srv/apps/*/.ndg")` to the `daemon` file so the proxy knows where to look for configurations.
 
-Then make sure to add/uncomment `CONFIGPATH+=("/srv/apps/*")` to the `daemon` file so the proxy knows where to look for configurations.
-
-    
