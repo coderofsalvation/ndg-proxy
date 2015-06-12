@@ -1,11 +1,11 @@
 SELF_PATH="$(dirname "$(readlink -f $0)")"
 CONFIGPATH=()
 # put your app paths here 
-CONFIGPATH+=("/srv/containers/lb/srv/apps/*/.ndg")
+#CONFIGPATH+=("/srv/containers/lb/srv/apps/*/.ndg")
 
 generate_config(){
   extrajson=""; :>/tmp/.config 
-  for dir in "${CONFIGPATH[@]}"; do echo $dir/config >> /tmp/.config; done
+  for dir in "${CONFIGPATH[@]}"; do find $dir/config >> /tmp/.config; done
   while read file; do source $file 
     [[ -n $HOST ]] && extrajson="$extrajson\n\"$URL\":{\n\t\"target\": \"$PROTOCOL$HOST:$PORT\",\n\t\"ws\": true\n\t},\n\t\"$URL\":{\n\t\"target\": \"$PROTOCOL$HOST:$PORT\"\n\t},"
   done < /tmp/.config
