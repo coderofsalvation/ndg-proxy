@@ -1,3 +1,4 @@
+#!/bin/bash
 SELF_PATH="$(dirname "$(readlink -f $0)")"
 CONFIGPATH=()
 # put your app paths here 
